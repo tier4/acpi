@@ -87,8 +87,7 @@ impl Rsdp {
                 let mapping = unsafe { handler.map_physical_region::<u8>(area.start, area.end - area.start) };
 
                 for address in area.clone().step_by(16) {
-                    let ptr_in_mapping =
-                        unsafe { mapping.virtual_start().as_ptr().add(address - area.start) };
+                    let ptr_in_mapping = unsafe { mapping.virtual_start().as_ptr().add(address - area.start) };
                     let signature = unsafe { *(ptr_in_mapping as *const [u8; 8]) };
 
                     if signature == RSDP_SIGNATURE {

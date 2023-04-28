@@ -77,7 +77,7 @@ pub use rsdp::{
 
 use crate::sdt::{SdtHeader, Signature};
 use alloc::{collections::BTreeMap, vec::Vec};
-use core::mem;
+use core::{mem, ptr::read_unaligned};
 use log::trace;
 use rsdp::Rsdp;
 
@@ -175,7 +175,7 @@ where
                 ((mapping.virtual_start().as_ptr() as usize) + mem::size_of::<SdtHeader>()) as *const u32;
 
             for i in 0..num_tables {
-                result.process_sdt(unsafe { *tables_base.add(i) as usize })?;
+                result.process_sdt(unsafe { read_unaligned(tables_base.add(i)) as usize })?;
             }
         } else {
             /*
@@ -188,7 +188,7 @@ where
                 ((mapping.virtual_start().as_ptr() as usize) + mem::size_of::<SdtHeader>()) as *const u64;
 
             for i in 0..num_tables {
-                result.process_sdt(unsafe { *tables_base.add(i) as usize })?;
+                result.process_sdt(unsafe { read_unaligned(tables_base.add(i)) as usize })?;
             }
         }
 
