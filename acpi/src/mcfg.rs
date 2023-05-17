@@ -43,7 +43,15 @@ impl PciConfigRegions {
                     | (u64::from(function) << 12)),
         )
     }
+    
+    pub fn list_all(&self) -> impl Iterator<Item = McfgEntry>{
+        self.regions.clone().into_iter()
+    }
+
 }
+
+
+
 
 #[repr(C, packed)]
 pub struct Mcfg {
@@ -76,9 +84,11 @@ impl Mcfg {
 #[derive(Clone, Copy, Debug)]
 #[repr(C, packed)]
 pub struct McfgEntry {
-    base_address: u64,
-    pci_segment_group: u16,
-    bus_number_start: u8,
-    bus_number_end: u8,
+    pub base_address: u64,
+    pub pci_segment_group: u16,
+    pub bus_number_start: u8,
+    pub bus_number_end: u8,
     _reserved: u32,
 }
+
+
