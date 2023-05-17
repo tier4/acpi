@@ -1,6 +1,6 @@
 use crate::{sdt::SdtHeader, AcpiError, AcpiHandler, AcpiTable, AcpiTables};
 use alloc::vec::Vec;
-use core::{fmt, mem, slice};
+use core::{fmt, mem, ops::RangeInclusive, slice};
 
 /// Describes a set of regions of physical memory used to access the PCIe configuration space. A
 /// region is created for each entry in the MCFG. Given the segment group, bus, device number, and
@@ -90,6 +90,9 @@ pub struct McfgEntry {
 impl McfgEntry {
     pub fn base_address(&self) -> u64 {
         self.base_address
+    }
+    pub fn buses(&self) -> RangeInclusive<u8> {
+        self.bus_number_start..=self.bus_number_end
     }
 }
 
