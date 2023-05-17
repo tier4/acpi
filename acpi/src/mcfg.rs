@@ -84,11 +84,18 @@ impl Mcfg {
 #[derive(Clone, Copy, Debug)]
 #[repr(C, packed)]
 pub struct McfgEntry {
-    pub base_address: u64,
-    pub pci_segment_group: u16,
-    pub bus_number_start: u8,
-    pub bus_number_end: u8,
+    base_address: u64,
+    pci_segment_group: u16,
+    bus_number_start: u8,
+    bus_number_end: u8,
     _reserved: u32,
+}
+
+
+impl McfgEntry {
+    pub fn base_address(&self) -> u64 { 
+        self.base_address
+    }
 }
 
 
