@@ -1,6 +1,6 @@
 use crate::{sdt::SdtHeader, AcpiError, AcpiHandler, AcpiTable, AcpiTables};
 use alloc::vec::Vec;
-use core::{mem, slice};
+use core::{fmt, mem, slice};
 
 /// Describes a set of regions of physical memory used to access the PCIe configuration space. A
 /// region is created for each entry in the MCFG. Given the segment group, bus, device number, and
@@ -43,15 +43,11 @@ impl PciConfigRegions {
                     | (u64::from(function) << 12)),
         )
     }
-    
-    pub fn list_all(&self) -> impl Iterator<Item = McfgEntry>{
+
+    pub fn list_all(&self) -> impl Iterator<Item = McfgEntry> {
         self.regions.clone().into_iter()
     }
-
 }
-
-
-
 
 #[repr(C, packed)]
 pub struct Mcfg {
@@ -81,7 +77,7 @@ impl Mcfg {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy)]
 #[repr(C, packed)]
 pub struct McfgEntry {
     base_address: u64,
@@ -91,11 +87,16 @@ pub struct McfgEntry {
     _reserved: u32,
 }
 
-
 impl McfgEntry {
-    pub fn base_address(&self) -> u64 { 
+    pub fn base_address(&self) -> u64 {
         self.base_address
     }
 }
 
-
+impl fmt::Debug for McfgEntry {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let segment = self.pci_segment_group;
+        let base_addr = self.base_address;
+        write!(f, "PCIe Segment {} at {:#x}", segment, base_addr)
+    }
+}
